@@ -1,3 +1,5 @@
+using Options.Api;
+
 var builder = WebApplication.CreateBuilder(args);
 
 var services = builder.Services;
@@ -5,6 +7,8 @@ var services = builder.Services;
 services.AddControllers();
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
+
+services.Configure<ApplicationConfiguration>(builder.Configuration.GetSection(nameof(ApplicationConfiguration)));
 
 var app = builder.Build();
 
