@@ -2,5 +2,5 @@ namespace Options.Api;
 
 public class ApplicationConfiguration
 {
-    public string Name { get; set; }
+    public string? Name { get; set; }
 }

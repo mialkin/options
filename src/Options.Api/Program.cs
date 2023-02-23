@@ -1,4 +1,5 @@
 using Options.Api;
+using Options.Api.BackgroundServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,7 @@ services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
 
 services.Configure<ApplicationConfiguration>(builder.Configuration.GetSection(nameof(ApplicationConfiguration)));
+services.AddHostedService<HostedService>();
 
 var app = builder.Build();
 
