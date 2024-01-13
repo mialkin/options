@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Options;
 using Options.Api;
 using Options.Api.BackgroundServices;
 using Serilog;
@@ -17,7 +18,22 @@ services.AddEndpointsApiExplorer();
 services.AddSwaggerGen(options => { options.DescribeAllParametersInCamelCase(); });
 services.AddRouting(options => options.LowercaseUrls = true);
 
-services.Configure<ApplicationSettings>(builder.Configuration.GetSection(key: nameof(ApplicationSettings)));
+services
+    .AddOptions<ApplicationSettings>()
+    .BindConfiguration(nameof(ApplicationSettings))
+    .Validate(x =>
+    {
+        const string optionsName = nameof(ApplicationSettings);
+
+        if (string.IsNullOrWhiteSpace(x.Name))
+            throw new OptionsValidationException(
+                optionsName,
+                optionsType: typeof(string),
+                failureMessages: new[] { $"'{nameof(x.Name)}' property of '{optionsName}' is empty" });
+
+        return true;
+    });
+
 services.AddHostedService<HostedService>();
 
 var application = builder.Build();
