@@ -1,29 +1,40 @@
 using Options.Api;
 using Options.Api.BackgroundServices;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, configuration) =>
+{
+    configuration.ReadFrom.Configuration(context.Configuration);
+    configuration.WriteTo.Console();
+});
 
 var services = builder.Services;
 
 services.AddControllers();
 services.AddEndpointsApiExplorer();
-services.AddSwaggerGen();
+services.AddSwaggerGen(options => { options.DescribeAllParametersInCamelCase(); });
+services.AddRouting(options => options.LowercaseUrls = true);
 
-services.Configure<ApplicationConfiguration>(builder.Configuration.GetSection(nameof(ApplicationConfiguration)));
+services.Configure<ApplicationSettings>(builder.Configuration.GetSection(key: nameof(ApplicationSettings)));
 services.AddHostedService<HostedService>();
 
-var app = builder.Build();
+var application = builder.Build();
 
-if (app.Environment.IsDevelopment())
+application.UseSerilogRequestLogging();
+
+if (application.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
+    application.UseSwagger();
+    application.UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
         options.RoutePrefix = string.Empty;
     });
 }
 
-app.MapControllers();
+application.UseRouting();
+application.MapControllers();
 
-app.Run();
+application.Run();

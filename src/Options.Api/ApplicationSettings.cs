@@ -1,6 +1,6 @@
 namespace Options.Api;
 
-public class ApplicationConfiguration
+public class ApplicationSettings
 {
     public string? Name { get; set; }
 }

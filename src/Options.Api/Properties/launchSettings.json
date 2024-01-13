@@ -4,7 +4,6 @@
     "Options.Api": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchUrl": "swagger",
       "applicationUrl": "http://localhost:5070",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

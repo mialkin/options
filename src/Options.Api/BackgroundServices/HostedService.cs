@@ -4,16 +4,13 @@ namespace Options.Api.BackgroundServices;
 
 public class HostedService : BackgroundService
 {
-    private ApplicationConfiguration _applicationConfiguration;
+    private ApplicationSettings _applicationSettings;
     private readonly ILogger<HostedService> _logger;
 
-    public HostedService(IOptionsMonitor<ApplicationConfiguration> optionsMonitor, ILogger<HostedService> logger)
+    public HostedService(IOptionsMonitor<ApplicationSettings> optionsMonitor, ILogger<HostedService> logger)
     {
-        _applicationConfiguration = optionsMonitor.CurrentValue;
-        optionsMonitor.OnChange(configuration =>
-        {
-            _applicationConfiguration = configuration;
-        });
+        _applicationSettings = optionsMonitor.CurrentValue;
+        optionsMonitor.OnChange(configuration => { _applicationSettings = configuration; });
         _logger = logger;
     }
 
@@ -21,8 +18,8 @@ public class HostedService : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            _logger.LogInformation(_applicationConfiguration.Name);
-            await Task.Delay(1000, stoppingToken);
+            _logger.LogInformation(_applicationSettings.Name);
+            await Task.Delay(3000, stoppingToken);
         }
     }
 }

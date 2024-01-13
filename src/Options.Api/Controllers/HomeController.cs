@@ -5,24 +5,19 @@ namespace Options.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class HomeController : ControllerBase
+public class HomeController(
+    IOptions<ApplicationSettings> options,
+    IOptionsSnapshot<ApplicationSettings> optionsSnapshot)
+    : ControllerBase
 {
-    private readonly ApplicationConfiguration _configurationFromOptions;
-    private readonly ApplicationConfiguration _configurationFromOptionsSnapshot;
-
-    public HomeController(
-        IOptions<ApplicationConfiguration> options,
-        IOptionsSnapshot<ApplicationConfiguration> optionsSnapshot)
-    {
-        _configurationFromOptions = options.Value;
-        _configurationFromOptionsSnapshot = optionsSnapshot.Value;
-    }
+    private readonly ApplicationSettings _settingsFromOptions = options.Value;
+    private readonly ApplicationSettings _settingsFromOptionsSnapshot = optionsSnapshot.Value;
 
     [HttpGet("index")]
     public IActionResult Index()
     {
-        var configurationFromOptions = _configurationFromOptions.Name;
-        var configurationFromOptionsSnapshot = _configurationFromOptionsSnapshot.Name;
+        var configurationFromOptions = _settingsFromOptions.Name;
+        var configurationFromOptionsSnapshot = _settingsFromOptionsSnapshot.Name;
 
         return Ok(new { configurationFromOptions, configurationFromOptionsSnapshot });
     }
