@@ -32,7 +32,8 @@ services
                 failureMessages: new[] { $"'{nameof(x.Name)}' property of '{optionsName}' is empty" });
 
         return true;
-    });
+    })
+    .ValidateOnStart();
 
 services.AddHostedService<HostedService>();
 
@@ -40,15 +41,12 @@ var application = builder.Build();
 
 application.UseSerilogRequestLogging();
 
-if (application.Environment.IsDevelopment())
+application.UseSwagger();
+application.UseSwaggerUI(options =>
 {
-    application.UseSwagger();
-    application.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-        options.RoutePrefix = string.Empty;
-    });
-}
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+    options.RoutePrefix = string.Empty;
+});
 
 application.UseRouting();
 application.MapControllers();
